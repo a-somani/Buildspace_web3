@@ -23,4 +23,8 @@ contract WavePortal {
         return totalWaves;
     }
 
+    function getYourWaves() public view returns (uint256){
+        console.log("You've made %d total waves!", userWaves[msg.sender]);
+        return userWaves[msg.sender];
+    }
 }
