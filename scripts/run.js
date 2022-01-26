@@ -1,3 +1,5 @@
+//includes individual wave tracker - uses userWaves in WavePortal.sol
+
 const main = async () => {
   const [owner, randomPerson] = await hre.ethers.getSigners()
   const waveContractFactory = await hre.ethers.getContractFactory("WavePortal")
