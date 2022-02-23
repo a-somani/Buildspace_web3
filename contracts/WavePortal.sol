@@ -5,17 +5,28 @@ import "hardhat/console.sol";
 
 contract WavePortal {
     uint256 totalWaves;
-    mapping(address => uint256) public userWaves;
+    mapping(address => uint256) public userWaveCount;
+
+    event NewWave(address indexed from, uint256 timestamp, string message);
+    
+    //custom data type - here its defined to store those 3 variables
+    struct Wave {
+        address waver;
+        string message;
+        uint256 timestamp;
+    }
+    Wave[] waves; //array of Wave structs
 
     constructor(){
-        console.log("Yo yo, im a smart contract");
+        console.log("My second smart contract!");
     }
 
-    function wave() public{
+    function wave(string calldata _message) public{
         totalWaves += 1;
-        userWaves[msg.sender] += 1;
+        userWaveCount[msg.sender] += 1;
         console.log("%s has waved", msg.sender);
-        console.log("Their total # of waves is: ", userWaves[msg.sender]);
+        waves.push(Wave(msg.sender, _message, block.timestamp));
+        emit NewWave(msg.sender, block.timestamp, _message);
     }
 
     function getTotalWaves() public view returns (uint256){
@@ -23,8 +34,11 @@ contract WavePortal {
         return totalWaves;
     }
 
-    function getYourWaves() public view returns (uint256){
-        console.log("You've made %d total waves!", userWaves[msg.sender]);
-        return userWaves[msg.sender];
+    function getAllWaves() public view returns (Wave[] memory){
+       return waves;
+    }
+
+    function getUserWaves(address _address) public view returns (uint256 userWaves){
+        userWaves = userWaveCount[_address];
     }
 }
