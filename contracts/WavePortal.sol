@@ -6,10 +6,8 @@ import "hardhat/console.sol";
 contract WavePortal {
     uint256 totalWaves;
     mapping(address => uint256) public userWaveCount;
-
-    event NewWave(address indexed from, uint256 timestamp, string message);
-    
-    //custom data type - here its defined to store those 3 variables
+    mapping(address => uint256) public lastWavedAt;
+    event NewWave(address indexed from, uint256 timestamp, string message); 
     struct Wave {
         address waver;
         string message;
@@ -18,10 +16,16 @@ contract WavePortal {
     Wave[] waves; //array of Wave structs
 
     constructor(){
-        console.log("My second smart contract!");
+        console.log("My third smart contract!");
     }
 
-    function wave(string calldata _message) public{
+    modifier minuteDelay(){
+        require(lastWavedAt[msg.sender] + 1 minutes < block.timestamp, "wait 1 minute");
+        _;
+    }
+
+    function wave(string calldata _message) public minuteDelay {
+        lastWavedAt[msg.sender] = block.timestamp;
         totalWaves += 1;
         userWaveCount[msg.sender] += 1;
         console.log("%s has waved", msg.sender);
@@ -40,5 +44,6 @@ contract WavePortal {
 
     function getUserWaves(address _address) public view returns (uint256 userWaves){
         userWaves = userWaveCount[_address];
+        console.log("%s has %d total waves!", _address, userWaves);
     }
 }
